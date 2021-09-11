@@ -26,13 +26,18 @@ fn validate_website(html: &str, keywords: Vec<String>) {
                                 .unwrap_or_default();
     let validator = validator::Validator::new(keywords);
     println!("Validating Website");
-    println!("Results:\n");
+
     let results = validator.validate(&title);
+    if results.len() == 0 {
+        println!("No validation errors. Quitting early.");
+        return;
+    }
     let mut table = Table::new();
     table.add_row(row!["Number", "Error"]);
     for (i, result) in results.iter().enumerate() {
         table.add_row(row![i, result.message]);
     }
+    println!("Results:\n");
     table.printstd();
 }
 
