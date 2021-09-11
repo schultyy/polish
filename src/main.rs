@@ -18,7 +18,13 @@ async fn fetch_http(url: &str) -> Result<String, Box<dyn std::error::Error>> {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
     println!("Hello {}!", args.website_url);
-    let content = fetch_http(&args.website_url).await;
-    println!("{}", content.unwrap());
+    fetch_http(&args.website_url)
+        .await
+        .and_then(|content| {
+            println!("{}", content);
+            Ok(())
+        })
+        .map_err(|err| eprintln!("{}", err))
+        .ok();
     Ok(())
 }
