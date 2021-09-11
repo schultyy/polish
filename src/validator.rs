@@ -28,16 +28,20 @@ impl Validator {
             .and_then(|keyword| Some(keyword.to_lowercase()))
     }
 
-    pub fn validate(&self, website_title: &str) -> Vec<ValidationResult> {
-        let mut validation_errors = vec!();
+    fn validate_title(&self, website_title: &str) -> Vec<ValidationResult> {
         let downcased_title = website_title.to_lowercase();
-
+        let mut results = vec!();
         if let Some(keyword) = self.primary_keyword() {
             if !downcased_title.contains(&keyword) {
-                validation_errors.push(ValidationResult::new(&format!("Expected keyword '{}' in website title. Found: None", keyword)));
+                results.push(ValidationResult::new(&format!("Expected keyword '{}' in website title. Found: None", keyword)));
             }
         }
+        results
+    }
 
+    pub fn validate(&self, website_title: &str) -> Vec<ValidationResult> {
+        let mut validation_errors = vec!();
+        validation_errors.append(&mut self.validate_title(website_title));
         validation_errors
     }
 }
